@@ -1,24 +1,19 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../utils/connection');
 
-const Country = sequelize.define('country', {
-    name: {
+const Student = sequelize.define('student', {
+    firstName: {
         type: DataTypes.STRING,
         allowNull: false
     },
-    language: {
+    lastName: {
         type: DataTypes.STRING,
         allowNull: false
     },
-    currency: {
+    program: {
         type: DataTypes.STRING,
         allowNull: false
     },
-    flagUrl: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    // continentId
 });
 
-module.exports = Country;
+module.exports = Student;
