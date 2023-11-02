@@ -1,33 +1,33 @@
 const catchError = require('../utils/catchError');
-const Student = require('../models/Student');
 const Course = require('../models/Course');
+const Student = require('../models/Student');
 
 const getAll = catchError(async(req, res) => {
-    const results = await Student.findAll({ include: [ Course ] });
+    const results = await Course.findAll({ include: [Student] });
     return res.json(results);
 });
 
 const create = catchError(async(req, res) => {
-    const result = await Student.create(req.body);
+    const result = await Course.create(req.body);
     return res.status(201).json(result);
 });
 
 const getOne = catchError(async(req, res) => {
     const { id } = req.params;
-    const result = await Student.findByPk(id);
+    const result = await Course.findByPk(id);
     if(!result) return res.sendStatus(404);
     return res.json(result);
 });
 
 const remove = catchError(async(req, res) => {
     const { id } = req.params;
-    await Student.destroy({ where: {id} });
+    await Course.destroy({ where: {id} });
     return res.sendStatus(204);
 });
 
 const update = catchError(async(req, res) => {
     const { id } = req.params;
-    const result = await Student.update(
+    const result = await Course.update(
         req.body,
         { where: {id}, returning: true }
     );
@@ -35,17 +35,16 @@ const update = catchError(async(req, res) => {
     return res.json(result[1][0]);
 });
 
-// insertar los coursos del estudiante
-// 1. Buscar el estudiante del id de la url ✅
-// 2. Setear los cursos del estudiante ✅
-// 3. Buscar los cursos seteados y retornar
-const setStudentCourses = catchError(async(req, res) => {
+// 1. Buscar el curso con el id de la url
+// 2. Setear los estudiantes del curso
+// 3. Buscar los estudiantes insertados y retornalos
+const setCourseStudents = catchError(async(req, res) => {
     const { id } = req.params;
-    const student = await Student.findByPk(id);
-    await student.setCourses(req.body); // [1, 3]
-    const courses = await student.getCourses();
-    return res.json(courses);
-});
+    const course = await Course.findByPk(id);
+    await course.setStudents(req.body);
+    const students = await course.getStudents();
+    return res.json(students);
+})
 
 module.exports = {
     getAll,
@@ -53,5 +52,5 @@ module.exports = {
     getOne,
     remove,
     update,
-    setStudentCourses,
+    setCourseStudents,
 }
